@@ -1,8 +1,7 @@
 import os
 from flask import Flask
 import urllib.parse
-import requests
-from bs4 import BeautifulSoup
+from combien import Combien
 
 app = Flask(__name__)
 
@@ -12,9 +11,8 @@ def hello():
 
 @app.route("/price/<path:url>")
 def price(url):
-	r = requests.get(urllib.parse.unquote(url))
-	soup = BeautifulSoup(r.text, 'html.parser')
-	return [meta.attrs['content'] for meta in soup.find_all("meta") if 'property' in meta.attrs and meta['property']=='product:price:amount'][0]
+	c = Combien(urllib.parse.unquote(url))
+	return c.price()
 
 if __name__ == "__main__":
 	app.run(debug=True)
